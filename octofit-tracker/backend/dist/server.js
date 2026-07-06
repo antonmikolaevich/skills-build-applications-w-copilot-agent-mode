@@ -13,7 +13,7 @@ const MONGODB_URI = process.env.MONGODB_URI || 'mongodb://localhost:27017/octofi
 const codespaceName = process.env.CODESPACE_NAME;
 const API_BASE_URL = codespaceName
     ? `https://${codespaceName}-8000.app.github.dev`
-    : `http://localhost:${PORT}`;
+    : 'http://localhost:8000';
 app.use(express_1.default.json());
 const sendCollection = async (res, fetcher) => {
     try {
@@ -28,17 +28,32 @@ const sendCollection = async (res, fetcher) => {
 app.get('/health', (_req, res) => {
     res.json({ status: 'ok', apiBaseUrl: API_BASE_URL, port: PORT });
 });
+app.get('/api/users', (_req, res) => {
+    void sendCollection(res, async () => models_1.User.find().lean());
+});
 app.get('/api/users/', (_req, res) => {
     void sendCollection(res, async () => models_1.User.find().lean());
+});
+app.get('/api/teams', (_req, res) => {
+    void sendCollection(res, async () => models_1.Team.find().lean());
 });
 app.get('/api/teams/', (_req, res) => {
     void sendCollection(res, async () => models_1.Team.find().lean());
 });
+app.get('/api/activities', (_req, res) => {
+    void sendCollection(res, async () => models_1.Activity.find().populate('user', 'name email').lean());
+});
 app.get('/api/activities/', (_req, res) => {
     void sendCollection(res, async () => models_1.Activity.find().populate('user', 'name email').lean());
 });
+app.get('/api/leaderboard', (_req, res) => {
+    void sendCollection(res, async () => models_1.LeaderboardEntry.find().populate('user', 'name').lean());
+});
 app.get('/api/leaderboard/', (_req, res) => {
     void sendCollection(res, async () => models_1.LeaderboardEntry.find().populate('user', 'name').lean());
+});
+app.get('/api/workouts', (_req, res) => {
+    void sendCollection(res, async () => models_1.Workout.find().lean());
 });
 app.get('/api/workouts/', (_req, res) => {
     void sendCollection(res, async () => models_1.Workout.find().lean());
