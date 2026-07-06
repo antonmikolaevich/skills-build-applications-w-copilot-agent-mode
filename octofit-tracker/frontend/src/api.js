@@ -46,3 +46,5 @@ export const fetchCollection = async (endpoint) => {
   const payload = await response.json();
   return normalizeApiResponse(payload);
 };
+
+
